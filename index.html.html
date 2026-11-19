@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rekap Harian Grup WhatsApp</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style type="text/tailwindcss">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --surface: #EEF2F8;
+  --surface-2: #E3F2FD;
+  --card: #FFFFFF;
+  --ink: #0D1B2A;
+  --muted: #546E7A;
+  --line: #BBDEFB;
+  --accent: #D32F2F;
+  --accent-2: #D32F2F;
+  --accent-soft: #E3F2FD;
+  --danger-soft: #FFEBEE;
+  --danger: #D32F2F;
+  --ok: #1565C0;
+  --ok-soft: #E3F2FD;
+  --safe-area-inset-top: 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #0A1628;
+    --surface-2: #122A4D;
+    --card: #10233F;
+    --ink: #EEF2F8;
+    --muted: #BBDEFB;
+    --line: #2A4A7A;
+    --accent: #E53935;
+    --accent-2: #EF5350;
+    --accent-soft: #122A4D;
+    --danger-soft: #4A1414;
+    --danger: #FF8A80;
+    --ok: #90CAF9;
+    --ok-soft: #122A4D;
+  }
+}
+
+* { box-sizing: border-box; }
+html { background: var(--surface); }
+body { margin: 0; background: var(--surface); color: var(--ink); font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+
+.serif { font-family: Georgia, "Times New Roman", serif; }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 8px 24px rgba(13, 71, 161, .08); }
+section h2 { border-left: 4px solid #D32F2F; padding-left: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700; }
+.field { width: 100%; min-height: 52px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); padding: 12px 14px; }
+.field:focus, button:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent-2) 55%, transparent); outline-offset: 2px; }
+.btn { min-height: 52px; border-radius: 12px; padding: 13px 18px; font-weight: 800; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 9px; }
+.btn-primary { background: #D32F2F; color: #FFFFFF; }
+.btn-gold { background: #1565C0; color: #FFFFFF; }
+.btn-outline { background: transparent; color: var(--ink); border-color: var(--line); }
+.timeline-dot { width: 9px; height: 9px; border-radius: 50%; background: #1565C0; flex: 0 0 auto; margin-top: 6px; }
+.section-num { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #D32F2F; color: white; font-weight: 800; flex: 0 0 auto; }
+.stat-card { background: #E3F2FD; border: 1px solid #BBDEFB; border-radius: 12px; padding: 12px; }
+.stat-num { color: #0D47A1; font-size: 1.5rem; line-height: 2rem; font-weight: 800; }
+.stat-label { color: #1565C0; font-size: 11px; }
+.timeline-time, .timeline-name { color: #1565C0; }
+.vehicle-table { border-collapse: collapse; width: 100%; min-width: 760px; background: #FFFFFF; color: #111; font-size: 14px; line-height: 1.45; }
+.vehicle-table th, .vehicle-table td { border: 1.5px solid #111; padding: 10px 9px; vertical-align: top; text-align: left; background: #FFFFFF; }
+.vehicle-table .vehicle-title { background: #D32F2F; color: #FFFFFF; text-align: center; font-size: 16px; font-weight: 900; padding: 12px 9px; }
+.vehicle-table .vehicle-head th { background: #1565C0; color: #FFFFFF; font-weight: 800; text-align: center; }
+.vehicle-table tbody tr td { background: #FFFFFF; }
+.vehicle-table .vehicle-note { min-width: 210px; }
+@media (max-width: 640px) { .vehicle-table { font-size: 13px; } .vehicle-table th, .vehicle-table td { padding: 8px 7px; } }
+
+@media print {
+  body { background: white; }
+  .no-print { display: none !important; }
+  .card { box-shadow: none; break-inside: avoid; }
+}
+
+</style>
+<style>
+/* ===== Polesan tampilan ===== */
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 500px at 50% -120px,var(--surface-2),transparent 70%),var(--surface);background-attachment:fixed;-webkit-font-smoothing:antialiased}
+header[data-safe-area-sticky-top]{background:linear-gradient(135deg,#0A3A85 0%,#1565C0 55%,#1E88E5 100%)!important;box-shadow:0 8px 24px rgba(13,71,161,.28)}
+header h1{letter-spacing:-.015em;text-shadow:0 2px 12px rgba(0,0,0,.18)}
+#hdrIcon{box-shadow:0 6px 16px rgba(211,47,47,.45),inset 0 0 0 1px rgba(255,255,255,.25)}
+.card{position:relative;overflow:hidden;transition:box-shadow .2s ease,transform .2s ease;box-shadow:0 1px 2px rgba(13,71,161,.06),0 10px 28px rgba(13,71,161,.08)}
+.card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,#D32F2F 0 28%,#1565C0 28% 100%);opacity:.9}
+section.card h2{border-left:none;padding-left:0}
+.section-num{background:linear-gradient(135deg,#E53935,#B71C1C);box-shadow:0 4px 10px rgba(211,47,47,.35);font-size:15px}
+.btn{transition:transform .15s ease,box-shadow .15s ease,filter .15s ease}
+.btn:not(:disabled):hover{transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 8px 18px rgba(13,71,161,.22)}
+.btn:not(:disabled):active{transform:translateY(0);box-shadow:none}
+.btn-primary{background:linear-gradient(135deg,#E53935,#C62828)}
+.btn-gold{background:linear-gradient(135deg,#1976D2,#0D47A1)}
+.btn-outline:hover{background:var(--accent-soft)}
+.field{transition:border-color .15s ease,box-shadow .15s ease}
+.field:hover{border-color:#64B5F6}
+.stat-card{background:linear-gradient(160deg,#FFFFFF,#E3F2FD);box-shadow:0 4px 12px rgba(21,101,192,.1);padding:14px 10px}
+.stat-num{font-size:2rem;line-height:2.2rem;letter-spacing:-.02em}
+.stat-label{font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+#noticeBox{border:1px solid var(--line);border-left:4px solid #1565C0;line-height:1.5}
+.chip{letter-spacing:.02em;border:1px solid color-mix(in srgb,currentColor 25%,transparent)}
+/* Ringkasan: daftar kejadian jadi kartu kecil */
+section[aria-labelledby=ringkasan] ol>li{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--danger);border-radius:12px;padding:10px 14px}
+/* Timeline */
+section[aria-labelledby=timeline] h3{background:var(--surface-2);border-radius:10px;padding:9px 14px;font-size:15px}
+section[aria-labelledby=timeline] .border-l-2{border-left-width:3px;margin-left:14px;padding-left:22px}
+section[aria-labelledby=timeline] .border-l-2>div{position:relative;padding:7px 10px;border-radius:10px;transition:background .15s}
+section[aria-labelledby=timeline] .border-l-2>div .timeline-dot{position:absolute;left:-28px;top:15px;margin:0;box-shadow:0 0 0 4px var(--card),0 0 0 5px var(--line)}
+.timeline-time{display:inline-block;background:var(--surface-2);border-radius:6px;padding:1px 7px;font-size:.88em;letter-spacing:.02em;margin-right:2px;vertical-align:baseline}
+section[aria-labelledby=timeline] .border-l-2>div:hover{background:var(--surface-2)}
+.admin-chip{background:#FFF3E0;color:#E65100;padding:1px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.06em;vertical-align:middle}
+@media (prefers-color-scheme:dark){.admin-chip{background:#4A2A0A;color:#FFB74D}}
+/* Status & follow-up */
+section[aria-labelledby=status] table thead th{text-transform:uppercase;font-size:12px;letter-spacing:.07em;color:var(--muted);border-bottom:2px solid var(--line)}
+section[aria-labelledby=status] tbody tr{transition:background .15s}
+section[aria-labelledby=status] tbody tr:hover{background:var(--surface-2)}
+section[aria-labelledby=status] tbody td{border-top:1px solid var(--line)}
+section[aria-labelledby=followup] ul>li.rounded-xl{border-left:4px solid #1565C0;transition:box-shadow .15s,transform .15s}
+section[aria-labelledby=followup] ul>li.rounded-xl:hover{box-shadow:0 6px 16px rgba(13,71,161,.12);transform:translateY(-1px)}
+/* Tabel kendaraan */
+section[aria-labelledby=ringkasan-kendaraan] .overflow-x-auto{border:1.5px solid #111;border-radius:12px;box-shadow:0 6px 18px rgba(13,71,161,.1)}
+.vehicle-table .vehicle-title{letter-spacing:.03em;font-size:17px}
+.vehicle-table tbody tr:nth-child(even) td{background:#F3F8FE}
+.vehicle-table tbody tr:hover td{background:#E3F2FD}
+.vehicle-table [lang=zh]{color:#37474F;font-size:.92em}
+.vstatus{font-size:11px;padding:3px 9px;margin-bottom:5px;text-transform:none;letter-spacing:0}
+.st-run{background:#E3F2FD;color:#0D47A1}.st-wait{background:#FFF3E0;color:#BF360C}.st-unl{background:#E8F5E9;color:#1B5E20}.st-valid{background:#F3E5F5;color:#6A1B9A}.st-none{background:#ECEFF1;color:#455A64}
+/* Tersimpan, foto, footer */
+section[aria-labelledby=tersimpan] li{transition:box-shadow .15s}
+section[aria-labelledby=tersimpan] li:hover{box-shadow:0 6px 16px rgba(13,71,161,.12)}
+details summary{color:#1565C0;list-style-position:inside}
+section[aria-labelledby=foto-zip] figure{transition:transform .2s,box-shadow .2s}
+section[aria-labelledby=foto-zip] figure:hover{transform:scale(1.03);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+footer{border-top:1px dashed var(--line);padding-top:18px}
+@media (prefers-color-scheme:dark){.stat-card{background:linear-gradient(160deg,#E3F2FD,#BBDEFB)}.vehicle-table .vehicle-title{background:#D32F2F}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media print{body{background:#fff!important}.card::before{display:none}}
+/* Watermark */
+.wm{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;pointer-events:none;font:700 12px/1 Georgia,"Times New Roman",serif;letter-spacing:.1em;padding:8px 14px;border-radius:999px;background:color-mix(in srgb,var(--card) 72%,transparent);color:var(--muted);border:1px solid var(--line);box-shadow:0 4px 12px rgba(13,71,161,.12);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+@media print{.wm{display:block}}
+</style>
+</head>
+<body>
+<div data-safe-area-inset-root style="box-sizing:border-box;padding-top:var(--safe-area-inset-top);min-height:100vh;background:var(--surface)" class="overflow-x-clip">
+<header data-safe-area-sticky-top style="top:var(--safe-area-inset-top);background:#0D47A1;color:#FFFFFF;border-bottom:4px solid #D32F2F" class="sticky z-20">
+<div class="mx-auto max-w-[980px] px-4 py-4 sm:px-6"><div class="flex items-start justify-between gap-3"><div>
+<p class="text-[11px] font-extrabold tracking-[0.18em] uppercase" style="color:#BBDEFB">Fenjaya Logistik Indonesia Karawang</p>
+<h1 class="serif font-bold leading-[1.05] mt-1 text-white" style="font-size:clamp(28px,6vw,44px);border-left:none;padding-left:0">Rekap Harian<br>Grup WhatsApp</h1>
+<p class="text-sm mt-2" style="color:#BBDEFB">Koordinasi operasional sopir · dibaca dari export .txt di browser</p></div>
+<div class="hidden sm:grid place-items-center w-12 h-12 rounded-2xl text-white shrink-0" style="background:#D32F2F" id="hdrIcon"></div></div></div>
+</header>
+<main class="mx-auto max-w-[980px] px-4 sm:px-6 pb-16">
+<section class="card mt-5 p-4 sm:p-6 no-print" aria-label="Pengaturan rekap">
+<div class="grid gap-4 sm:grid-cols-[1fr_1fr]">
+<label class="block"><span class="flex items-center gap-2 text-sm font-bold mb-2" id="calLbl"></span><input id="date" class="field" type="date"></label>
+<div><span class="block text-sm font-bold mb-2">File export WhatsApp (.txt / .zip)</span>
+<input id="file" class="hidden" type="file" accept=".txt,.zip,text/plain,application/zip">
+<button type="button" id="btnUpload" class="btn btn-outline w-full"></button>
+<p class="text-xs text-[var(--muted)] mt-2 truncate" id="fileName"></p>
+<p class="text-xs text-[var(--muted)] mt-1" id="zipInfo"></p>
+<p class="text-xs text-[var(--muted)] mt-1" role="status" id="readInfo"></p></div></div>
+<div class="mt-5 rounded-xl border border-[var(--line)] p-4">
+<label class="block" for="tempel-chat"><span class="block text-sm font-bold mb-2">Tempel history chat langsung</span>
+<span class="block text-xs text-[var(--muted)] mb-2">Tempel isi history chat WhatsApp di sini — tidak perlu upload file. Tanggal terbaru (11/18/26 atau 18/11/26) akan terdeteksi otomatis dan rekap langsung tampil.</span>
+<textarea id="tempel-chat" class="field" style="min-height:140px;resize:vertical" placeholder="Contoh:
+[11/18/26, 07:24:00 AM] Budi: Tiba di goldensun
+[11/18/26, 08:10:00 AM] Budi: Dari RHS otw mudik"></textarea></label>
+<button type="button" id="btnPaste" class="btn btn-primary w-full mt-3">Proses Otomatis dari Tempelan</button></div>
+<div class="mt-4 flex gap-2 rounded-xl bg-[var(--accent-soft)] px-3 py-3 text-sm" role="status" id="noticeBox"></div>
+<div class="mt-4 grid grid-cols-3 gap-2 text-center" id="stats"></div>
+</section>
+<div class="mt-4 no-print grid gap-2 sm:grid-cols-2">
+<button type="button" id="btnCopy" class="btn btn-primary w-full"></button>
+<button type="button" id="btnSave" class="btn btn-gold w-full"></button></div>
+<p class="mt-2 text-sm text-[var(--danger)]" role="alert" id="savedErr"></p>
+<div id="saved"></div>
+<div id="results"></div>
+<div id="zip"></div>
+<div class="wm" aria-hidden="true">Kelvin P.</div>
+<footer class="mt-8 text-center text-xs leading-relaxed text-[var(--muted)]">
+<p>Rekap dibuat dari pesan yang terfilter pada tanggal terpilih. Pesan duplikat digabung dan baris “gambar tidak disertakan” tanpa caption diabaikan.</p>
+<p class="mt-1">Kata kunci follow-up: rijek, kurang, macet, padat, antri, segel, SJ, selesai, tiba.</p></footer>
+</main></div>
+<script>
+const IC = {
+  Upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  CalendarDays: '<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/>',
+  ClipboardCopy: '<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/><path d="M16 4h2a2 2 0 0 1 2 2v4"/><path d="M21 14H11"/><path d="m15 10-4 4 4 4"/>',
+  FileText: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+  AlertTriangle: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  Clock3: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16.5 12"/>',
+  UserRound: '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+  CheckCircle2: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  MessageSquareWarning: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 7v2"/><path d="M12 13h.01"/>'
+};
+const icon = (n, size, cls) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${cls || ""}">${IC[n]}</svg>`;
+const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const $ = (id) => document.getElementById(id);
+
+function minutesFrom(t) { const [h, m] = t.split(":").map(Number); return h * 60 + m; }
+function formatDateLong(iso) {
+  if (!iso) return "Tanggal belum dipilih";
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return "Tanggal belum dipilih";
+  return new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "long", year: "numeric" }).format(new Date(y, m - 1, d));
+}
+function formatDateShort(iso) {
+  if (!iso) return "-";
+  const [y, m, d] = iso.split("-").map(Number);
+  if (!y || !m || !d) return "-";
+  return `${String(d).padStart(2, "0")}/${String(m).padStart(2, "0")}/${y}`;
+}
+function cleanText(raw) { return raw.replace(/\s+/g, " ").trim(); }
+function cleanCatatan(raw) {
+  let s = String(raw || "");
+  s = s.replace(/Odo\s+tiba\s+d\s+([A-Za-z0-9]+)/gi, "Tiba di $1");
+  s = s.replace(/Odo\s+tiba\s+di\s+/gi, "Tiba di ");
+  s = s.replace(/Odo\s+tiba\s+/gi, "Tiba ");
+  s = s.replace(/\bTiba\s+d\s+([A-Za-z0-9]+)/gi, "Tiba di $1");
+  s = s.replace(/\bOdo\s+tiba\s+di\b/gi, "Tiba di");
+  s = s.replace(/\bOdo\s+tiba\b/gi, "Tiba");
+  s = s.replace(/\bOdo\s+dari\b/gi, "Dari");
+  s = s.replace(/\bOdo\s+awal\b/gi, "Awal");
+  s = s.replace(/\bOdo\b/gi, "");
+  s = s.replace(/\bgoldensun\b/gi, "Goldensun");
+  s = s.replace(/\btaichang\b/gi, "Taichang");
+  s = s.replace(/\bzhengxiang\b/gi, "Zhengxiang");
+  s = s.replace(/\s+([.,;:!?])/g, "$1");
+  s = s.replace(/\s{2,}/g, " ");
+  s = s.replace(/^\s*[.,;:]\s*/, "");
+  return cleanText(s);
+}
+function cleanContent(raw) {
+  let s = String(raw || "");
+  s = s.replace(/(?:IMG|VID|AUD|PTT|STK)-[^\s]*\.(?:jpg|jpeg|png|mp4|opus|webp|heic|pdf|mov)[^\s]*/gi, " ");
+  s = s.replace(/[^\s]+\.(?:jpg|jpeg|png|mp4|opus|webp|heic|pdf|mov)[^\s]*\s*\(file terlampir\)/gi, " ");
+  s = s.replace(/\(file terlampir\)/gi, " ");
+  s = s.replace(/<\s*(?:media|gambar|foto|image|video|pesan|album)[^>]*>/gi, " ");
+  s = s.replace(/<[^>]*?(?:tidak\s+disertakan|omitted|not\s+included|pesan\s+album)[^>]*>/gi, " ");
+  s = s.replace(/<[^>]*>/g, " ");
+  s = s.replace(/\[\s*(?:media|gambar|foto|image|video|pesan\s+album|album)[^\]]*\]/gi, " ");
+  s = s.replace(/\bmedia\s+tidak\s+disertakan\b[.:]?/gi, " ");
+  s = s.replace(/\bgambar\s+tidak\s+disertakan\b[.:]?/gi, " ");
+  s = s.replace(/\bfoto\s+tidak\s+disertakan\b[.:]?/gi, " ");
+  s = s.replace(/\bmedia\s+omitted\b[.:]?/gi, " ");
+  s = s.replace(/\bmedia\s+not\s+included\b[.:]?/gi, " ");
+  s = s.replace(/^\s*\[?foto terlampir\]?\s*/i, "");
+  s = s.replace(/\s+([.,;:!?])/g, "$1");
+  s = s.replace(/\s{2,}/g, " ");
+  return cleanText(s);
+}
+function isMediaOnly(raw) {
+  let s = String(raw || "");
+  s = s.replace(/(?:IMG|VID|AUD|PTT|STK)-[^\s]*\.(?:jpg|jpeg|png|mp4|opus|webp|heic|pdf|mov)[^\s]*/gi, " ");
+  s = s.replace(/[^\s]+\.(?:jpg|jpeg|png|mp4|opus|webp|heic|pdf|mov)[^\s]*\s*\(file terlampir\)/gi, " ");
+  s = s.replace(/\(file terlampir\)/gi, " ");
+  s = s.replace(/<[^>]*>/g, " ");
+  s = s.replace(/\[\s*(?:media|gambar|foto|image|video|pesan\s+album|album)[^\]]*\]/gi, " ");
+  s = s.replace(/\b(?:media|gambar|foto|image|video)\s+tidak\s+disertakan\b[.:]?/gi, " ");
+  s = s.replace(/\b(?:media|image)\s+omitted\b[.:]?/gi, " ");
+  s = s.replace(/\bmedia\s+not\s+included\b[.:]?/gi, " ");
+  s = s.replace(/\bpesan\s+album\b[.:]?/gi, " ");
+  const cleaned = cleanContent(s);
+  if (!cleaned) return true;
+  const t = cleaned.toLowerCase().replace(/[.:]+$/g, "").trim();
+  if (["gambar", "media", "foto", "image", "video", "lampiran", "attachment", "[gambar]", "[media]", "pesan album", "album"].includes(t)) return true;
+  if (!/[a-z0-9\u4e00-\u9fff]/i.test(cleaned)) return true;
+  return false;
+}
+function mandarinFor(originalText, zhText) {
+  if (!originalText || isMediaOnly(originalText)) return "";
+  if (!cleanContent(originalText)) return "";
+  return zhText;
+}
+function normalizeYear(y) { return y < 100 ? 2000 + y : y; }
+function monthIndex(name) {
+  const n = name.toLowerCase().replace(/\./g, "");
+  const map = { januari: 1, january: 1, jan: 1, februari: 2, february: 2, feb: 2, maret: 3, march: 3, mar: 3, april: 4, apr: 4, mei: 5, may: 5, juni: 6, june: 6, jun: 6, juli: 7, july: 7, jul: 7, agustus: 8, august: 8, aug: 8, september: 9, sep: 9, sept: 9, oktober: 10, october: 10, oct: 10, november: 11, nov: 11, desember: 12, december: 12, dec: 12 };
+  return map[n] ?? null;
+}
+function detectLatestDate(raw) {
+  if (!raw) return null;
+  const candidates = [];
+  const push = (yRaw, m, d) => {
+    const y = normalizeYear(yRaw);
+    if (m < 1 || m > 12 || d < 1 || d > 31) return;
+    const dt = new Date(y, m - 1, d);
+    if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) candidates.push(dt.getTime());
+  };
+  const slashRe = /(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/g;
+  let sm;
+  while ((sm = slashRe.exec(raw)) !== null) {
+    const a = Number(sm[1]), b = Number(sm[2]), y = Number(sm[3]);
+    if (a > 12) push(y, b, a); else if (b > 12) push(y, a, b); else push(y, b, a);
+  }
+  const longRe1 = /(\d{1,2})\s+([A-Za-z.]+)\s+(\d{2,4})/g;
+  let lm;
+  while ((lm = longRe1.exec(raw)) !== null) {
+    const month = monthIndex(lm[2]);
+    if (month) push(Number(lm[3]), month, Number(lm[1]));
+  }
+  const longRe2 = /([A-Za-z.]+)\s+(\d{1,2}),?\s+(\d{2,4})/g;
+  while ((lm = longRe2.exec(raw)) !== null) {
+    const month = monthIndex(lm[1]);
+    if (month) push(Number(lm[3]), month, Number(lm[2]));
+  }
+  if (!candidates.length) return null;
+  const dt = new Date(Math.max(...candidates));
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+}
+function parseWhatsApp(raw, isoDate) {
+  const rawLines = raw ? raw.split(/\r?\n/) : [];
+  let totalLines = rawLines.length;
+  if (totalLines > 0 && rawLines[totalLines - 1].trim() === "") totalLines -= 1;
+  if (!raw || !isoDate) return { messages: [], totalLines, matchedLines: 0 };
+  const [y, mo, d] = isoDate.split("-").map(Number);
+  const out = [];
+  const seen = new Set();
+  let matchedLines = 0;
+  const toTime = (hStr, mStr, apRaw) => {
+    let hour = hStr ? Number(hStr) : 0;
+    const minute = mStr ? Number(mStr) : 0;
+    const ap = (apRaw || "").toUpperCase();
+    if (ap === "PM" && hour < 12) hour += 12;
+    if (ap === "AM" && hour === 12) hour = 0;
+    return { time: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`, minutes: hour * 60 + minute };
+  };
+  const slashMatches = (n1, n2, yearRaw) => {
+    if (normalizeYear(yearRaw) !== y) return false;
+    return (n1 === d && n2 === mo) || (n1 === mo && n2 === d);
+  };
+  const parseHeader = (line) => {
+    let m;
+    m = line.match(/^\[(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})(?:,?\s+(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?)?\]\s*(?:[-–]\s*)?([^:]+?):\s*(.*)$/i);
+    if (m) { const t = toTime(m[4], m[5], m[7]); return { matches: slashMatches(Number(m[1]), Number(m[2]), Number(m[3])), time: t.time, minutes: t.minutes, name: cleanText(m[8]), text: cleanText(m[9]) }; }
+    m = line.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})(?:,?\s+(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?)?\s*[-–]\s*([^:]+?):\s*(.*)$/i);
+    if (m) { const t = toTime(m[4], m[5], m[7]); return { matches: slashMatches(Number(m[1]), Number(m[2]), Number(m[3])), time: t.time, minutes: t.minutes, name: cleanText(m[8]), text: cleanText(m[9]) }; }
+    m = line.match(/^\[?(\d{1,2})\s+([A-Za-z.]+)\s+(\d{2,4})(?:,?\s+(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?)?\]?\s*(?:[-–]\s*)?([^:]+?):\s*(.*)$/i);
+    if (m) {
+      const month = monthIndex(m[2]);
+      if (month) { const t = toTime(m[4], m[5], m[7]); return { matches: normalizeYear(Number(m[3])) === y && Number(m[1]) === d && month === mo, time: t.time, minutes: t.minutes, name: cleanText(m[8]), text: cleanText(m[9]) }; }
+    }
+    m = line.match(/^\[?([A-Za-z.]+)\s+(\d{1,2}),?\s+(\d{2,4})(?:,?\s+(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?)?\]?\s*(?:[-–]\s*)?([^:]+?):\s*(.*)$/i);
+    if (m) {
+      const month = monthIndex(m[1]);
+      if (month) { const t = toTime(m[4], m[5], m[7]); return { matches: normalizeYear(Number(m[3])) === y && Number(m[2]) === d && month === mo, time: t.time, minutes: t.minutes, name: cleanText(m[8]), text: cleanText(m[9]) }; }
+    }
+    m = line.match(/^\[(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?\]\s*(?:[-–]\s*)?([^:]+?):\s*(.*)$/i);
+    if (m) { const t = toTime(m[1], m[2], m[4]); return { matches: true, time: t.time, minutes: t.minutes, name: cleanText(m[5]), text: cleanText(m[6]) }; }
+    m = line.match(/^(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?\s*[-–]\s*([^:]+?):\s*(.*)$/i);
+    if (m) { const t = toTime(m[1], m[2], m[4]); return { matches: true, time: t.time, minutes: t.minutes, name: cleanText(m[5]), text: cleanText(m[6]) }; }
+    m = line.match(/^(\d{1,2})[:.](\d{2})(?::(\d{2}))?\s*([AP]M)?\s+([^:]+?):\s*(.*)$/i);
+    if (m) { const t = toTime(m[1], m[2], m[4]); return { matches: true, time: t.time, minutes: t.minutes, name: cleanText(m[5]), text: cleanText(m[6]) }; }
+    return null;
+  };
+  let current = null;
+  for (const rawLine of rawLines) {
+    const line = rawLine.normalize("NFKC").replace(/[\u200e\u200f\u202a-\u202e]/g, "").trim();
+    if (!line) continue;
+    const header = parseHeader(line);
+    if (header) {
+      if (!header.matches) { current = null; continue; }
+      const name = header.name;
+      const text = cleanContent(header.text);
+      if (!name || !text || /pesan ini dihapus|message deleted/i.test(text)) { current = null; continue; }
+      matchedLines += 1;
+      const key = `${header.time}|${name.toLowerCase()}|${text.toLowerCase()}`;
+      if (seen.has(key)) { current = null; continue; }
+      seen.add(key);
+      current = { time: header.time, minutes: header.minutes, name, text };
+      out.push(current);
+    } else if (current) {
+      const cleanedLine = cleanContent(line);
+      if (!cleanedLine || isMediaOnly(cleanedLine)) continue;
+      matchedLines += 1;
+      current.text = cleanText(`${current.text} ${cleanedLine}`);
+    }
+  }
+  return { messages: out.sort((a, b) => a.minutes - b.minutes), totalLines, matchedLines };
+}
+function isAdminName(name) {
+  const n = String(name || "").replace(/^[^A-Za-z0-9]+/, "");
+  return /^(anda|you)$/i.test(n.trim()) || /(^|[^a-z])zpi/i.test(n) || /(^|[^a-z])(ariyanto|ramdani|fahry|divka)([^a-z]|$)/i.test(n);
+}
+function normalizePlace(raw) { if (!raw) return null; const t = raw.trim().toLowerCase(); if (!t || t === "d" || t === "di") return null; return raw.trim(); }
+function extractOdoTibaPlace(text) { const m = String(text || "").match(/Odo\s+tiba\s+(?:d|di)\s+([A-Za-z0-9]+)/i); if (!m) return null; return normalizePlace(m[1]); }
+function isAskingReturnPermission(text) {
+  const t = String(text || "").toLowerCase();
+  return (t.includes("apakah sudah boleh kembali pulang") || t.includes("sudah boleh kembali pulang") || t.includes("boleh kembali pulang") || t.includes("boleh pulang") || t.includes("udah boleh pulang") || /sudah\s+boleh.*pulang/.test(t) || /udah\s+boleh.*pulang/.test(t) || /boleh\s+(kembali\s+)?pulang/.test(t) || /bisa\s+(kembali\s+)?pulang/.test(t) || /\b(ij[iu]n|izin)\b.*\b(kembali|pulang|balik)\b/.test(t));
+}
+function returnPermissionNote() { return { id: "Menunggu konfirmasi untuk kembali ke ZPI / ZXG / Zhengxiang", zh: "等待确认返回 ZPI / 正祥。" }; }
+function priorityOf(text) {
+  const t = text.toLowerCase();
+  if (t.includes("rijek") || t.includes("reject") || t.includes("ambruk") || t.includes("kurang")) return 1;
+  if (/\bm(?:a)?cet\b/.test(t)) return 2;
+  if (t.includes("antri")) return 3;
+  if (t.includes("padat")) return 4;
+  if (isAskingReturnPermission(text)) return 5;
+  return 99;
+}
+function priorityLabel(p) { return p === 1 ? "Rijek / kurang" : p === 2 ? "Macet" : p === 3 ? "Antri" : p === 4 ? "Padat" : p === 5 ? "Tanya izin pulang" : "Perhatian"; }
+function blockFor(msg) {
+  const t = msg.text.toLowerCase();
+  if (msg.minutes < 360) return "Shift mulai";
+  if (msg.minutes < 480) return "Proses muat pagi";
+  if (msg.minutes < 600 && (t.includes("tiba") || t.includes("antri"))) return "Tiba tujuan & antri";
+  return "Bongkar, rijek & macet";
+}
+function hasAccident(messages) { return messages.some((m) => /(kecelakaan|tabrakan|terbalik|terguling|kebakaran|terbakar|korban|luka berat|meninggal|ditabrak)/i.test(m.text)); }
+const DESTINATIONS = [
+  { id: "Taichang", label: "Taichang", zh: "台昌" }, { id: "RHS", label: "RHS", zh: "瑞浩盛" }, { id: "Haier", label: "Haier", zh: "海尔" },
+  { id: "ZPI", label: "ZPI", zh: "ZPI" }, { id: "ZXG", label: "ZXG", zh: "ZXG" }, { id: "Goldensun", label: "Goldensun", zh: "金太阳" },
+  { id: "MSA", label: "MSA", zh: "MSA" }, { id: "Yuto", label: "Yuto", zh: "Yuto" }
+];
+function isMudikMessage(text) { const t = text.toLowerCase(); return t.includes("mudik") || t.includes("menuju zhengxiang") || t.includes("perjalanan pulang") || /(berangkat|otw|odo).*\bdari\b.*\bke\s+(zhengxiang|zxg|zpi)\b/.test(t); }
+function mudikNoteFor(text, withRijek = true) {
+  if (!isMudikMessage(text)) return null;
+  const rijekM = withRijek ? text.match(/rijek\s*(\d+)/i) : null;
+  if (rijekM) return { id: `Perjalanan pulang menuju Zhengxiang - Bawa barang Rijek ${rijekM[1]} pcs`, zh: "正在回正祥的路上。携带不良品。" };
+  if (withRijek && /rijek/i.test(text)) return { id: "Perjalanan pulang menuju Zhengxiang - Bawa barang Rijek", zh: "正在回正祥的路上。携带不良品。" };
+  return { id: "Perjalanan pulang menuju Zhengxiang", zh: "正在回正祥的路上。" };
+}
+function displayMessageText(msg) {
+  if (!msg.text || isMediaOnly(msg.text)) return "";
+  if (isAskingReturnPermission(msg.text)) return cleanCatatan(returnPermissionNote().id);
+  const mudik = mudikNoteFor(msg.text);
+  if (mudik) return cleanCatatan(`${mudik.id} ${mudik.zh}`);
+  return cleanCatatan(msg.text);
+}
+function extractPlate(source) {
+  const m = source.match(/B\s*(\d{3,4})\s*([A-Z]{1,3})?\b/i);
+  if (!m) return null;
+  return m[2] ? `B ${m[1]} ${m[2].toUpperCase()}` : `B ${m[1]}`;
+}
+const PLACE_STOP = /^(tujuan|tempat|lokasi|sini|sana|pabrik|jalan|pos|kantor|parkiran|depan|area|zhengxiang|zpi|zxg|zx|rumah|gudang|tol|toll|pom|spbu)$/i;
+const PLACE_END = /^(jam|pukul|wib|sudah|masih|dan|siap|antri|mulai|selesai|lanjut|proses|berlangsung|ok|oke|ya|yg|yang|karena|macet|padat|rijek|kurang|bongkar|muat|terhalang|terhambat|menunggu|nunggu|lagi|area|lokasi|sj|mobil|unit|truk)$/i;
+const SITUASI_MUAT = /(mobil|truk|unit)\s+lain|yang\s+satu|yg\s+satu|ada\s+\w+\s+(mobil|unit|truk)/i; // "muat" menggambarkan kendaraan lain, bukan kendaraan ini
+// Tempat lain di luar daftar tetap (mis. "bongkar di Yuto", "bongkar di Mega star asia")
+function findExtraPlace(t) {
+  const m = t.match(/(?:bongkar|antri|tiba|menuju|muat)\s+(?:di|ke|untuk)\s+([a-z][a-z0-9]*(?:\s+[a-z][a-z0-9]*){0,3})/i);
+  if (!m) return null;
+  const words = [];
+  for (const w of m[1].split(/\s+/)) { if (PLACE_END.test(w)) break; words.push(w); }
+  if (!words.length || PLACE_STOP.test(words[0])) return null;
+  const name = words.map((w) => (w.length <= 4 && w === w.toUpperCase() ? w : w[0].toUpperCase() + w.slice(1).toLowerCase())).join(" ");
+  return { id: name, label: name, zh: name };
+}
+// Asal keberangkatan: "km dari ZPI", "berangkat dari ZXG", "keluar dari RHS"
+function findOrigin(text) {
+  const t = String(text || "").toLowerCase();
+  const pats = [[5, "goldensun|golden sun|金太阳"], [0, "taichang|tai chang|台昌"], [1, "rhs|瑞浩盛"], [2, "haier|海尔"], [3, "\\bzpi\\b"], [4, "\\bzxg\\b|zhengxiang|正祥"], [6, "\\bmsa\\b|mega\\s*star\\s*asia"], [7, "\\byuto\\b"]];
+  for (const [i, src] of pats) { if (new RegExp("(?:\\bdari|\\bdr|keluar dari|asal)\\s+(?:" + src + ")").test(t)) return DESTINATIONS[i]; }
+  return null;
+}
+function findDestination(text) {
+  const t = String(text || "").toLowerCase();
+  const bare = t.trim().split(/\s+/).length === 1;
+  const pats = [[5, /goldensun|golden sun|金太阳/g], [0, /taichang|tai chang|台昌/g], [1, /rhs|瑞浩盛/g], [2, /haier|海尔/g], [3, /\bzpi\b/g], [4, /\bzxg\b|zhengxiang|正祥/g], [6, /\bmsa\b|mega\s*star\s*asia/g], [7, /\byuto\b/g]];
+  const hits = [];
+  for (const [i, re] of pats) {
+    let m;
+    while ((m = re.exec(t)) !== null) {
+      const before = t.slice(Math.max(0, m.index - 16), m.index);
+      if (/(\bdari|\bdr|keluar dari|asal)\s*$/.test(before)) continue; // "dari X" = asal, bukan tujuan
+      if ([3, 4, 6, 7].includes(i) && !bare && !/(\bke|menuju|tujuan|\bdi|bongkar|antri|tiba|untuk|lanjut|muat|\bd)\s*$/.test(before)) continue; // ZPI/ZXG = pabrik asal; hanya tujuan bila didahului kata depan
+      hits.push({ i, at: m.index });
+    }
+  }
+  if (!hits.length) return bare ? null : findExtraPlace(String(text || ""));
+  hits.sort((x, y) => x.at - y.at);
+  return DESTINATIONS[hits[hits.length - 1].i];
+}
+function lastMatching(list, re) { for (let i = list.length - 1; i >= 0; i -= 1) { if (re.test(list[i].text)) return list[i]; } return undefined; }
+const VSTATUS = {
+  run: ["Dalam perjalanan", "运输途中", "st-run"], back: ["Dalam perjalanan pulang", "返程途中", "st-run"],
+  home: ["Menunggu muatan / muatan selesai", "等待装货或装货完成", "st-wait"], mproc: ["Proses muat", "装货中", "st-wait"],
+  mdone: ["Muat selesai, menunggu berangkat", "装货完成，等待出发", "st-wait"], wait: ["Menunggu bongkar", "等待卸货", "st-wait"],
+  unl: ["Proses bongkar", "卸货中", "st-unl"], valid: ["Menunggu validasi barang bongkar", "等待验收卸货货物", "st-valid"],
+  none: ["Belum ada update", "暂无更新", "st-none"]
+};
+// Status = kejadian terakhir yang bermakna (berangkat / tiba / muat / bongkar)
+function vehicleStatus(list) {
+  let last = null;
+  for (const m of list) {
+    const t = m.text;
+    if (!t || isAskingReturnPermission(t)) continue;
+    let ev = null;
+    if (/selesai\s+bongkar/i.test(t)) ev = "valid";
+    else if (/antri|(me)?nunggu\s+bongkar|belum\s+(di\s*)?bongkar/i.test(t)) ev = "wait";
+    else if (/(mulai|sedang|masih|lanjut)\s+(proses\s+)?bongkar|proses\s+bongkar/i.test(t)) ev = "unl";
+    else if (isMudikMessage(t)) ev = "back";
+    else if (/(odo\s+tiba|tiba|sampai|sampe)/i.test(t)) {
+      const op = extractOdoTibaPlace(t);
+      const d = op ? findDestination(op) : findDestination(t);
+      if (d) ev = d.id === "ZPI" || d.id === "ZXG" ? "home" : "wait";
+      else ev = last === "back" ? "home" : "wait";
+    }
+    else if (/(berangkat|keluar dari|dari zx|dari zhengxiang|otw|mulai jalan|start jalan)/i.test(t) || (findOrigin(t) && /(\bkm\b|\bodo\b)/i.test(t))) ev = "run";
+    else if (last === "valid" && /\bodo\b/i.test(t)) ev = "run";
+    else if (/(selesai|beres|sudah|udah)\s+muat\b/i.test(t)) { if (last !== "wait" && last !== "unl" && !SITUASI_MUAT.test(t)) ev = "mdone"; }
+    else if (/\bmuat\b/i.test(t)) { if (last !== "wait" && last !== "unl" && !SITUASI_MUAT.test(t)) ev = "mproc"; }
+    if (ev) last = ev;
+  }
+  const s = VSTATUS[last || "none"];
+  return { key: last || "none", id: s[0], zh: s[1], cls: s[2] };
+}
+function buildVehicleRows(messages) {
+  const byKey = new Map();
+  messages.forEach((m) => {
+    const plate = extractPlate(m.name) || extractPlate(m.text);
+    const key = plate || m.name;
+    if (!byKey.has(key)) byKey.set(key, { driver: m.name, plate, list: [] });
+    const group = byKey.get(key);
+    if (!group.plate && plate) group.plate = plate;
+    group.list.push(m);
+  });
+  const rows = [...byKey.values()].map((group) => {
+    const list = [...group.list].sort((a, b) => a.minutes - b.minutes);
+    const cleanList = list.map((m) => ({ ...m, text: cleanContent(m.text) })).filter((m) => !(/\b(poto|foto)\b/i.test(m.text) && /\b[1-4]\.\s/.test(m.text)));
+    let destFromAny = null;
+    // Mudik = perjalanan pulang. Bila ada pesan mudik, Tujuan = tempat bongkar
+    // sebelum pulang: tempat terakhir yang disebut (ZPI/ZXG = rumah, dilewati).
+    const hasMudik = cleanList.some((m) => isMudikMessage(m.text));
+    for (const m of [...cleanList].reverse()) {
+      if (isAskingReturnPermission(m.text)) continue;
+      const d = findDestination(m.text);
+      if (d && hasMudik && (d.id === "ZPI" || d.id === "ZXG")) continue;
+      if (d) { destFromAny = d; break; }
+    }
+    const destination = destFromAny ? destFromAny.label : "-";
+    const destinationZh = destFromAny ? destFromAny.zh : "-";
+    const departCandidates = cleanList.filter((m) => !/tiba|(buka|membuka|cek|pengecekan|periksa)\s*(seal|segel)|persiapan\s+bongkar|bongkar/i.test(m.text) && /(sj\b|segel|odo|berangkat|keluar dari|dari zx|dari zhengxiang|\bkm\b[^.]*\bdari\b|otw|mulai jalan|start jalan)/i.test(m.text));
+    const departMsg = departCandidates[0];
+    const arriveMsg = lastMatching(cleanList, /(odo\s+tiba|tiba di|tiba tujuan|tiba taichang|tiba di rhs|sudah tiba|telah tiba|udah tiba|sampe|tiba\b)/i);
+    const mulaiBongkarMsg = lastMatching(cleanList, /mulai bongkar/i);
+    const prosesBongkarMsg = lastMatching(cleanList, /(lanjut proses bongkar|masih proses bongkar|proses bongkar)/i);
+    const selesaiBongkarMsg = lastMatching(cleanList, /selesai bongkar/i);
+    const unloadMsg = mulaiBongkarMsg || prosesBongkarMsg || selesaiBongkarMsg;
+    const depart = departMsg ? departMsg.time : "-";
+    // "Tiba" sebelum jam berangkat = tiba di pabrik asal untuk muat (sudah lewat), bukan tiba di tujuan
+    const arriveOk = arriveMsg && !(departMsg && arriveMsg.minutes < departMsg.minutes);
+    const arrive = arriveOk ? arriveMsg.time : "-";
+    const unload = unloadMsg ? unloadMsg.time : "-";
+    const buildNoteFor = (msg) => {
+      const t = cleanContent(msg.text);
+      if (!t || isMediaOnly(msg.text)) return null;
+      if (isAskingReturnPermission(t)) return returnPermissionNote();
+      const mudik = mudikNoteFor(t, false);
+      if (mudik) return mudik;
+      const msgDest = findDestination(t);
+      const dLabel = msgDest ? msgDest.label : destination !== "-" ? destination : "";
+      const dZh = msgDest ? msgDest.zh : destinationZh !== "-" ? destinationZh : "目的地";
+      const partsId = [], partsZh = [];
+      if (/mulai bongkar/i.test(t)) { partsId.push(`Mulai bongkar jam ${msg.time}.`); partsZh.push(`${msg.time} 开始卸货。`); }
+      else if (/masih proses bongkar/i.test(t)) { partsId.push(`Masih proses bongkar jam ${msg.time}.`); partsZh.push(`${msg.time} 正在卸货。`); }
+      else if (/lanjut\s+(proses\s+)?bongkar/i.test(t)) { partsId.push(`Lanjut proses bongkar jam ${msg.time}.`); partsZh.push(`${msg.time} 正在卸货。`); }
+      else if (/proses bongkar/i.test(t)) { partsId.push(`Proses bongkar jam ${msg.time}.`); partsZh.push(`${msg.time} 正在卸货。`); }
+      else if (/selesai bongkar/i.test(t)) { partsId.push(`Selesai bongkar jam ${msg.time} (selesai).`); partsZh.push(`${msg.time} 卸货完成。`); }
+      if (/antri/i.test(t)) { partsId.push(dLabel ? `Antri bongkar di ${dLabel}.` : "Antri bongkar."); partsZh.push(dLabel ? `正在${dZh}排队卸货。` : "正在排队卸货。"); }
+      if (partsId.length) return { id: cleanCatatan(partsId.join(" ")), zh: mandarinFor(t, partsZh.join(" ")) };
+      if (/odo\s+tiba/i.test(t)) {
+        const odoPlace = extractOdoTibaPlace(t);
+        if (odoPlace) {
+          const placeDest = findDestination(odoPlace);
+          const placeLabel = placeDest ? placeDest.label : cleanCatatan(odoPlace);
+          const placeZh = placeDest ? placeDest.zh : dZh;
+          return { id: cleanCatatan(`Tiba di ${placeLabel} ${msg.time}.`), zh: `${msg.time} 已抵达${placeZh}。` };
+        }
+        const destLabel = dLabel || (destination !== "-" ? destination : "");
+        if (destLabel) return { id: cleanCatatan(`Tiba di ${destLabel} ${msg.time}.`), zh: `${msg.time} 已抵达${dZh}。` };
+        return { id: cleanCatatan(`Tiba ${msg.time}.`), zh: `${msg.time} 已抵达${dZh}。` };
+      }
+      if (/tiba/i.test(t)) {
+        if (dLabel === "Taichang") return { id: "Tiba di Taichang, siap bongkar.", zh: "已抵达台昌，准备卸货。" };
+        if (dLabel === "RHS") return { id: "Tiba di RHS, siap bongkar.", zh: "已抵达瑞浩盛，准备卸货。" };
+        if (dLabel) return { id: `Sudah tiba di ${dLabel}, siap bongkar.`, zh: `车辆已抵达${dZh}，准备卸货。` };
+        return { id: "Sudah tiba di tujuan, siap bongkar.", zh: "车辆已抵达目的地，准备卸货。" };
+      }
+      if (/(selesai|beres|sudah|udah)\s+muat\b/i.test(t)) return { id: dLabel ? `Selesai muat untuk ${dLabel}.` : "Selesai muat.", zh: dLabel ? `${dZh}货物装载完成。` : "装货完成。" };
+      if (/\bmuat\b/i.test(t)) return { id: msgDest ? `Proses muat ${msgDest.label}.` : "Proses muat.", zh: msgDest ? `正在装载${msgDest.zh}货物。` : "正在装货。" };
+      const org = findOrigin(t);
+      const toLbl = dLabel && (!org || dLabel !== org.label) ? dLabel : "";
+      const dep = org
+        ? { id: `Berangkat dari ${org.label}${toLbl ? ` menuju ${toLbl}` : ""}.`, zh: `车辆已从${org.zh}出发${toLbl ? `前往${dZh}` : ""}。` }
+        : { id: dLabel ? `Sudah berangkat menuju ${dLabel}.` : "Sudah berangkat.", zh: dLabel ? `车辆已出发前往${dZh}。` : "车辆已出发。" };
+      if (/(berangkat|keluar dari|dari zx|km dari zx|km dari|otw|mulai jalan|start jalan)/i.test(t)) return dep;
+      if (org && /(\bkm\b|\bodo\b)/i.test(t)) return dep;
+      if (/(sj\b|segel|odo)/i.test(t)) return { ...dep, weak: true };
+      return null;
+    };
+    let noteId = "", noteZh = "", weakNote = null;
+    for (let idx = cleanList.length - 1; idx >= 0; idx -= 1) {
+      const mt = cleanList[idx].text;
+      if (/\bmuat\b/i.test(mt) && !/(berangkat|otw|\bkm\b|\bodo\b)/i.test(mt) && (SITUASI_MUAT.test(mt) || ["wait", "unl"].includes(vehicleStatus(cleanList.slice(0, idx)).key))) continue;
+      const n = buildNoteFor(cleanList[idx]);
+      if (n && n.weak) { weakNote = weakNote || n; continue; }
+      if (n) { noteId = cleanCatatan(n.id); noteZh = n.zh; break; }
+    }
+    if (!noteId && weakNote) { noteId = cleanCatatan(weakNote.id); noteZh = weakNote.zh; }
+    if (!noteId) { noteId = "Menunggu update lanjutan."; noteZh = "等待进一步更新。"; }
+    return { status: vehicleStatus(cleanList), plate: group.plate || group.driver, driver: group.driver, destination, destinationZh, depart, arrive, unload, noteId, noteZh, sortKey: departMsg ? departMsg.minutes : (list[0]?.minutes ?? 9999) };
+  });
+  return rows.sort((a, b) => a.sortKey - b.sortKey || a.plate.localeCompare(b.plate));
+}
+
+async function decompressEntry(buffer, entry) {
+  const view = new DataView(buffer);
+  if (view.getUint32(entry.localOffset, true) !== 0x04034b50) throw new Error(`Header lokal ZIP tidak ditemukan untuk ${entry.name}.`);
+  const nameLen = view.getUint16(entry.localOffset + 26, true);
+  const extraLen = view.getUint16(entry.localOffset + 28, true);
+  const dataStart = entry.localOffset + 30 + nameLen + extraLen;
+  const dataEnd = dataStart + entry.compressedSize;
+  if (dataEnd > buffer.byteLength) throw new Error(`Data ${entry.name} terpotong di dalam ZIP.`);
+  const compressed = new Uint8Array(buffer.slice(dataStart, dataEnd));
+  if (entry.method === 0) return compressed;
+  if (entry.method !== 8) throw new Error(`Metode kompresi ${entry.method} untuk ${entry.name} belum didukung.`);
+  const DS = window.DecompressionStream;
+  if (!DS) throw new Error("Browser ini tidak mendukung dekompresi ZIP (DecompressionStream).");
+  const stream = new Blob([compressed]).stream().pipeThrough(new DS("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+async function parseZip(buffer) {
+  if (buffer.byteLength < 22) throw new Error("File ZIP terlalu kecil / rusak.");
+  const view = new DataView(buffer);
+  let eocd = -1;
+  const scanStart = Math.max(0, buffer.byteLength - 22 - 65535);
+  for (let i = buffer.byteLength - 22; i >= scanStart; i -= 1) { if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; } }
+  if (eocd < 0) throw new Error("End of Central Directory ZIP tidak ditemukan. File mungkin bukan .zip WhatsApp atau rusak.");
+  const totalEntries = view.getUint16(eocd + 10, true);
+  const cdOffset = view.getUint32(eocd + 16, true);
+  const entries = [];
+  let p = cdOffset;
+  for (let i = 0; i < totalEntries; i += 1) {
+    if (view.getUint32(p, true) !== 0x02014b50) break;
+    const method = view.getUint16(p + 10, true);
+    const compressedSize = view.getUint32(p + 20, true);
+    const nameLen = view.getUint16(p + 28, true);
+    const extraLen = view.getUint16(p + 30, true);
+    const commentLen = view.getUint16(p + 32, true);
+    const localOffset = view.getUint32(p + 42, true);
+    const name = new TextDecoder("utf-8").decode(new Uint8Array(buffer.slice(p + 46, p + 46 + nameLen)));
+    if (name && !name.endsWith("/") && compressedSize !== 0xffffffff && localOffset !== 0xffffffff) entries.push({ name, method, compressedSize, localOffset });
+    p += 46 + nameLen + extraLen + commentLen;
+  }
+  if (!entries.length) throw new Error("Tidak ada file yang bisa dibaca di dalam ZIP.");
+  const txtEntries = entries.filter((e) => /\.txt$/i.test(e.name));
+  if (!txtEntries.length) throw new Error("Tidak ada file .txt di dalam ZIP. Export WhatsApp harus menyertakan _chat.txt.");
+  const chatEntry = txtEntries.find((e) => /(^|\/)_chat\.txt$/i.test(e.name)) || [...txtEntries].sort((a, b) => b.compressedSize - a.compressedSize)[0];
+  const chatText = new TextDecoder("utf-8").decode(await decompressEntry(buffer, chatEntry));
+  if (!chatText.trim()) throw new Error("File .txt di dalam ZIP kosong.");
+  const isImage = (n) => /\.(jpe?g|png|webp|gif)$/i.test(n);
+  const isMedia = (n) => /\.(jpe?g|png|webp|gif|mp4|mov|opus|pdf|heic)$/i.test(n);
+  const imageEntries = entries.filter((e) => isImage(e.name) && !/(^|\/)__MACOSX\//i.test(e.name));
+  const mediaCount = entries.filter((e) => isMedia(e.name)).length;
+  const firstImages = [];
+  for (const entry of imageEntries.slice(0, 20)) {
+    try {
+      const bytes = await decompressEntry(buffer, entry);
+      const ext = entry.name.split(".").pop()?.toLowerCase() || "jpeg";
+      const type = ext === "png" ? "image/png" : ext === "webp" ? "image/webp" : ext === "gif" ? "image/gif" : "image/jpeg";
+      firstImages.push({ name: entry.name.split("/").pop() || entry.name, url: URL.createObjectURL(new Blob([bytes], { type })) });
+    } catch { }
+  }
+  window._zipTotalImages = imageEntries.length;
+  window._zipTotalFiles = entries.length;
+  return { chatText, fileCount: entries.length, imageCount: imageEntries.length, mediaCount, images: firstImages };
+}
+
+/* ===== State ===== */
+let date = "", rawText = "", pastedText = "", fileName = "";
+let notice = "Pilih tanggal rekap, lalu unggah file .txt hasil export WhatsApp untuk membuat rekap.";
+let savedRecaps = [], saving = false, savedError = "";
+let zipImages = [], zipInfo = null, zipLoading = false, zipUrls = [];
+let parsedChat, messages, recap;
+
+function clearZipImages() {
+  zipUrls.forEach((u) => { try { URL.revokeObjectURL(u); } catch { } });
+  zipUrls = []; zipImages = []; zipInfo = null; window._zipTotalImages = 0;
+}
+// Penyimpanan rekap: localStorage (menggantikan API "actions" milik platform asal)
+const LS_KEY = "rekap-wa-recaps";
+function reloadRecords() {
+  try { const r = JSON.parse(localStorage.getItem(LS_KEY) || "[]"); savedRecaps = Array.isArray(r) ? r.filter((x) => x && x.value && typeof x.value.recapText === "string") : []; }
+  catch { savedRecaps = []; savedError = "Rekap tersimpan tidak dapat dimuat saat ini."; }
+}
+function writeRecords(list) { localStorage.setItem(LS_KEY, JSON.stringify(list)); }
+
+function compute() {
+  parsedChat = parseWhatsApp(rawText, date);
+  messages = parsedChat.messages;
+  const lastTime = messages.length ? messages[messages.length - 1].time : "—";
+  const driverMsgs = messages.filter((m) => !isAdminName(m.name));
+  const problems = driverMsgs.filter((m) => priorityOf(m.text) <= 5).map((m) => ({ msg: m, priority: priorityOf(m.text), label: priorityLabel(priorityOf(m.text)) })).sort((a, b) => a.priority - b.priority || a.msg.minutes - b.msg.minutes);
+  const blocks = new Map();
+  messages.forEach((m) => { const b = blockFor(m); if (!blocks.has(b)) blocks.set(b, []); blocks.get(b).push(m); });
+  const orderedBlocks = [...blocks.entries()].sort((a, b) => a[1][0].minutes - b[1][0].minutes);
+  const byDriver = new Map();
+  driverMsgs.forEach((m) => { if (!byDriver.has(m.name)) byDriver.set(m.name, []); byDriver.get(m.name).push(m); });
+  const status = [...byDriver.entries()].map(([name, list]) => ({ name, last: list[list.length - 1] })).sort((a, b) => a.name.localeCompare(b.name));
+  const followups = [...byDriver.entries()].map(([name, list]) => {
+    const probs = list.filter((m) => priorityOf(m.text) <= 5);
+    if (!probs.length) return null;
+    return { name, probs, replied: probs.some((p) => {
+      return messages.some((x) => isAdminName(x.name) && x.minutes > p.minutes && (x.text.toLowerCase().includes(name.toLowerCase()) || /(siap|ok|dicek|dilanjut|diproses|terima|boleh|silakan|silahkan)/i.test(x.text)));
+    }) };
+  }).filter(Boolean);
+  recap = { lastTime, problems, orderedBlocks, status, followups, accident: hasAccident(messages), vehicles: buildVehicleRows(driverMsgs) };
+}
+
+function buildRecapText() {
+  const lines = [];
+  lines.push(`REKAP HARIAN — GRUP WHATSAPP KOORDINASI FENJAYA LOGISTIK INDONESIA KARAWANG`);
+  lines.push(`Tanggal: ${formatDateLong(date)}`);
+  lines.push("");
+  lines.push("1. RINGKASAN HARI INI");
+  lines.push(recap.accident ? "Ada kecelakaan/insiden besar hari ini. Periksa detail pada timeline dan daftar follow-up." : "Tidak ada kecelakaan/insiden besar hari ini. Operasional berjalan penuh.");
+  lines.push(`Ada ${recap.problems.length} kejadian yang perlu perhatian:`);
+  recap.problems.forEach((p, i) => lines.push(`${i + 1}. ${p.msg.time} ${p.msg.name}: ${displayMessageText(p.msg)}`));
+  if (!recap.problems.length) lines.push("- Tidak ada kejadian yang perlu perhatian.");
+  lines.push("");
+  lines.push("2. TIMELINE KEJADIAN");
+  recap.orderedBlocks.forEach(([block, list]) => { lines.push(`— ${block} —`); list.forEach((m) => lines.push(`${m.time} ${m.name}: ${displayMessageText(m)}`)); });
+  if (!messages.length) lines.push("Tidak ada pesan pada tanggal ini.");
+  lines.push("");
+  lines.push(`3. STATUS TERAKHIR PER SOPIR JAM ${recap.lastTime}`);
+  recap.status.forEach((s) => lines.push(`${s.name}: ${displayMessageText(s.last)} (${s.last.time})`));
+  lines.push("");
+  lines.push("4. YANG PERLU DI-FOLLOW UP");
+  if (!recap.followups.length) lines.push("Tidak ada follow-up yang terdeteksi.");
+  recap.followups.forEach((f) => lines.push(`- ${f.name}: ${f.probs.map((p) => displayMessageText(p)).join("; ")} — ${f.replied ? "Sudah dibalas admin" : "Belum dibalas admin"}`));
+  lines.push("");
+  lines.push("5. RINGKASAN KENDARAAN / 车辆进度更新");
+  if (!recap.vehicles.length) lines.push("Tidak ada kendaraan pada tanggal ini.");
+  recap.vehicles.forEach((v) => lines.push(`${formatDateShort(date)} | ${v.plate} | ${v.destination} | Berangkat ${v.depart} | Tiba ${v.arrive} | Bongkar ${v.unload} | Status: ${v.status.id} | ${v.noteId} ${v.noteZh}`));
+  return lines.join("\n");
+}
+function copyText(text, okMsg) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; ta.style.left = "0"; ta.style.top = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); notice = okMsg; } catch { notice = "Salin belum berhasil. Blok teks rekap lalu salin secara manual."; }
+  document.body.removeChild(ta);
+  update();
+}
+
+/* ===== Render ===== */
+const H2 = "serif text-[clamp(22px,5vw,30px)] font-bold leading-tight";
+const head = (n, id, title, sub) => `<div class="flex gap-3 items-start"><span class="section-num">${n}</span><div><h2 id="${id}" class="${H2}">${title}</h2><p class="text-sm text-[var(--muted)]">${sub}</p></div></div>`;
+function renderSettings() {
+  $("hdrIcon").innerHTML = icon("FileText", 24);
+  $("calLbl").innerHTML = icon("CalendarDays", 17) + " Tanggal rekap";
+  const bu = $("btnUpload");
+  bu.disabled = zipLoading;
+  bu.innerHTML = icon("Upload", 19) + " " + esc(zipLoading ? "Membaca .zip…" : fileName ? "Ganti file .txt / .zip" : "Upload file .txt / .zip");
+  $("fileName").textContent = fileName || "Belum ada file. File hanya dibaca di browser, tidak disimpan sebagai file.";
+  $("zipInfo").textContent = zipInfo ? `ZIP ${zipInfo.fileName}: ${zipInfo.fileCount} file di dalam ZIP, ${zipInfo.mediaCount} foto/video, menampilkan ${zipImages.length} foto pertama.` : "Untuk .zip: chat diekstrak dulu, lalu hanya 20 foto pertama dimuat agar browser tidak berat.";
+  $("zipInfo").setAttribute("role", zipInfo ? "status" : "");
+  $("readInfo").textContent = rawText ? `Dibaca ${parsedChat.totalLines} baris, ${messages.length} pesan teks cocok untuk ${date ? formatDateLong(date) : "tanggal yang dipilih"}` : "";
+  $("noticeBox").innerHTML = icon("CheckCircle2", 18, "shrink-0 mt-0.5") + `<span>${esc(notice)}</span>`;
+  $("stats").innerHTML = [[messages.length, "Pesan terfilter"], [recap.status.length, "Sopir aktif"], [recap.problems.length, "Perlu perhatian"]].map(([n, l]) => `<div class="stat-card"><p class="stat-num">${n}</p><p class="stat-label">${l}</p></div>`).join("");
+  $("btnCopy").innerHTML = icon("ClipboardCopy", 19) + " Salin Rekap";
+  $("btnCopy").disabled = !messages.length;
+  $("btnSave").textContent = saving ? "Menyimpan…" : "Simpan Rekap";
+  $("btnSave").disabled = !messages.length || saving;
+  $("savedErr").textContent = savedError;
+  $("savedErr").style.display = savedError ? "" : "none";
+}
+function renderSaved() {
+  $("saved").innerHTML = savedRecaps.length ? `<section class="card mt-4 p-4 sm:p-6" aria-labelledby="tersimpan"><h2 id="tersimpan" class="serif text-[clamp(20px,5vw,26px)] font-bold leading-tight">Rekap tersimpan</h2><p class="text-sm text-[var(--muted)] mt-1">Rekap yang sudah disimpan dapat dibuka lagi.</p><ul class="mt-4 space-y-3">${savedRecaps.map((item) => `<li class="rounded-xl border border-[var(--line)] p-4"><div class="flex flex-wrap items-center justify-between gap-2"><strong>${esc(item.value.dateLabel)}</strong><button type="button" class="btn btn-outline !min-h-0 py-2 px-3 text-sm" data-del="${esc(item.id)}">Hapus</button></div><p class="text-sm text-[var(--muted)] mt-1">${item.value.messageCount} pesan · ${item.value.driverCount} sopir · ${item.value.problemCount} perlu perhatian${item.value.fileName ? ` · ${esc(item.value.fileName)}` : ""}</p><details class="mt-3"><summary class="cursor-pointer font-bold text-sm">Lihat isi rekap</summary><pre class="mt-3 whitespace-pre-wrap break-words text-sm leading-relaxed">${esc(item.value.recapText)}</pre></details></li>`).join("")}</ul></section>` : "";
+}
+function renderResults() {
+  if (!messages.length) {
+    $("results").innerHTML = `<section class="card mt-5 p-6 text-center">${icon("MessageSquareWarning", 36, "mx-auto text-[var(--accent-2)]")}<h2 class="serif text-2xl font-bold mt-3">Belum ada pesan untuk ditampilkan</h2><p class="text-[var(--muted)] mt-2">Pilih tanggal rekap dan unggah file export WhatsApp (.txt) untuk tanggal tersebut.</p><p class="text-sm text-[var(--muted)] mt-2">Hanya pesan pada tanggal yang dipilih yang akan ditampilkan.</p></section>`;
+    return;
+  }
+  const dm = (m) => esc(displayMessageText(m));
+  const th = (a, b) => `<th style="background:#1565C0;color:#FFFFFF">${a}<br><span lang="zh">${b}</span></th>`;
+  $("results").innerHTML = `
+<section class="card mt-5 p-4 sm:p-6" aria-labelledby="ringkasan">${head(1, "ringkasan", "Ringkasan hari ini", `${esc(formatDateLong(date))} · Data dari grup koordinasi`)}
+<p class="mt-4 leading-relaxed">${recap.accident ? "Ada kecelakaan/insiden besar hari ini. Periksa detail pada timeline dan daftar follow-up." : "Tidak ada kecelakaan/insiden besar hari ini. Operasional berjalan penuh."}</p>
+<div class="mt-5 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-4"><p class="font-extrabold flex items-center gap-2">${icon("AlertTriangle", 19, "text-[var(--accent-2)]")} Ada ${recap.problems.length} kejadian yang perlu perhatian</p>
+${recap.problems.length ? `<ol class="mt-3 space-y-3">${recap.problems.map((p, i) => `<li class="flex gap-3"><span class="font-extrabold text-[var(--muted)]">${i + 1}.</span><div><span class="chip bg-[var(--danger-soft)] text-[var(--danger)]">${esc(p.label)}</span><p class="mt-1 leading-relaxed"><strong>${esc(p.msg.time)} ${esc(p.msg.name)}:</strong> ${dm(p.msg)}</p></div></li>`).join("")}</ol>` : `<p class="mt-2 text-[var(--muted)]">Tidak ada kejadian yang perlu perhatian.</p>`}</div></section>
+<section class="card mt-4 p-4 sm:p-6" aria-labelledby="timeline">${head(2, "timeline", "Timeline kejadian", "Urut jam · pesan duplikat digabung")}
+<div class="mt-5 space-y-6">${recap.orderedBlocks.map(([block, list]) => `<div><h3 class="flex items-center gap-2 font-extrabold">${icon("Clock3", 18)} ${esc(block)}</h3><div class="mt-3 border-l-2 border-[var(--line)] pl-4 space-y-3">${list.map((m) => `<div class="flex gap-3"><span class="timeline-dot"></span><p class="leading-relaxed"><span class="mono font-bold timeline-time">${esc(m.time)}</span> <strong class="timeline-name">${esc(m.name)}:</strong>${isAdminName(m.name) ? ' <span class="chip admin-chip">Admin</span>' : ""} ${dm(m)}</p></div>`).join("")}</div></div>`).join("")}</div></section>
+<section class="card mt-4 p-4 sm:p-6" aria-labelledby="status">${head(3, "status", `Status terakhir per sopir jam ${esc(recap.lastTime)}`, "Satu baris per sopir (admin tidak dihitung) · dari pesan terakhirnya hari itu")}
+<div class="mt-5 overflow-x-clip rounded-xl border border-[var(--line)]"><table class="w-full text-left text-sm sm:text-base"><thead><tr class="bg-[var(--surface-2)]"><th class="px-3 py-3 sm:px-4 w-[32%]">Sopir</th><th class="px-3 py-3 sm:px-4">Status terakhir</th></tr></thead><tbody>${recap.status.map((s, i) => `<tr class="${i % 2 ? "bg-[var(--surface)]/50" : ""}"><td class="px-3 py-3 sm:px-4 font-bold align-top"><span class="inline-flex items-center gap-2">${icon("UserRound", 17)} ${esc(s.name)}</span></td><td class="px-3 py-3 sm:px-4 align-top">${dm(s.last)} <span class="mono text-xs text-[var(--muted)]">· ${esc(s.last.time)}</span></td></tr>`).join("")}</tbody></table></div></section>
+<section class="card mt-4 p-4 sm:p-6" aria-labelledby="followup">${head(4, "followup", "Yang perlu di-follow up", "Angka persis dari chat · status balasan dihitung dari pesan admin berikutnya")}
+${recap.followups.length ? `<ul class="mt-5 space-y-4">${recap.followups.map((f) => `<li class="rounded-xl border border-[var(--line)] p-4"><div class="flex flex-wrap items-center justify-between gap-2"><strong class="text-lg">${esc(f.name)}</strong><span class="chip ${f.replied ? "bg-[var(--ok-soft)] text-[var(--ok)]" : "bg-[var(--danger-soft)] text-[var(--danger)]"}">${f.replied ? "Sudah dibalas admin" : "Belum dibalas admin"}</span></div><ul class="mt-2 space-y-1 list-disc pl-5">${f.probs.map((p) => `<li><span class="mono text-sm">${esc(p.time)}</span> — ${dm(p)}</li>`).join("")}</ul></li>`).join("")}</ul>` : `<p class="mt-4 text-[var(--muted)]">Tidak ada follow-up yang terdeteksi dari kata kunci.</p>`}</section>
+<section class="card mt-4 p-4 sm:p-6" aria-labelledby="ringkasan-kendaraan">${head(5, "ringkasan-kendaraan", "Ringkasan Kendaraan / 车辆进度更新", "Satu baris per nomor polisi · urut jam berangkat · data kosong diisi “-”")}
+<p class="mt-3 text-sm text-[var(--muted)] leading-relaxed">Nomor polisi diambil dari nama / pesan sopir. Tujuan, jam berangkat, tiba, dan bongkar diambil otomatis dari kata kunci di chat. Catatan ditulis Indonesia dulu, lalu Mandarin di baris yang sama. Bila ada pesan mudik (perjalanan pulang), Tujuan diisi tempat bongkar sebelum pulang. Status di Catatan = kejadian terakhir: berangkat → dalam perjalanan; tiba di Zhengxiang/ZPI → menunggu muatan; tiba di tujuan lain → menunggu bongkar; selesai bongkar tanpa ODO/berangkat sesudahnya → menunggu validasi barang bongkar.</p>
+<div class="mt-4 overflow-x-auto rounded-lg" style="-webkit-overflow-scrolling:touch"><table class="vehicle-table" aria-label="Ringkasan Kendaraan"><thead>
+<tr><th colspan="7" class="vehicle-title" style="background:#D32F2F;color:#FFFFFF">车辆进度更新 / Update Progres Kendaraan</th></tr>
+<tr class="vehicle-head">${th("Tanggal", "日期")}${th("Nomor Polisi", "车牌号码")}${th("Tujuan", "目的地")}${th("Waktu Berangkat", "出发时间")}${th("Waktu Tiba", "抵达时间")}${th("Waktu Bongkar", "卸货时间")}${th("Catatan", "笔记")}</tr></thead><tbody>
+${recap.vehicles.map((v) => `<tr><td class="whitespace-nowrap">${esc(formatDateShort(date))}</td><td class="font-bold whitespace-nowrap">${esc(v.plate)}</td><td class="whitespace-nowrap">${esc(v.destination)}${v.destination !== "-" ? `<br><span lang="zh">${esc(v.destinationZh)}</span>` : ""}</td><td class="mono whitespace-nowrap">${esc(v.depart)}</td><td class="mono whitespace-nowrap">${esc(v.arrive)}</td><td class="mono whitespace-nowrap">${esc(v.unload)}</td><td class="vehicle-note"><span class="chip vstatus ${v.status.cls}">${esc(v.status.id)} · <span lang="zh">${esc(v.status.zh)}</span></span><br><span>${esc(v.noteId)}</span><br><span lang="zh">${esc(v.noteZh)}</span></td></tr>`).join("")}
+${!recap.vehicles.length ? `<tr><td colspan="7" class="text-center">Tidak ada kendaraan pada tanggal ini.</td></tr>` : ""}</tbody></table></div>
+<p class="mt-3 text-xs text-[var(--muted)]">Cara baca: Waktu Berangkat = yang paling awal — SJ &amp; segel terpasang / awal / berangkat dari ZXG / “Km dari ZXG” · Waktu Tiba &amp; Tujuan = yang TERAKHIR — “Tiba di…” / “Tiba tujuan” / “Tiba Taichang” / “Tiba di RHS” / “Tiba” · Waktu Bongkar = “Mulai bongkar” TERAKHIR diutamakan; bila tidak ada, pakai “Proses bongkar” / “Lanjut proses bongkar” / “Masih proses bongkar” yang terakhir; bila hanya ada “Selesai bongkar”, jam itu dipakai dan Catatan ditandai “selesai”. Catatan diambil dari pesan terakhir yang memuat status. Geser tabel ke samping di HP bila kolom terpotong.</p></section>`;
+}
+function renderZip() {
+  $("zip").innerHTML = `<section class="card mt-4 p-4 sm:p-6" aria-labelledby="foto-zip">${head(6, "foto-zip", "Foto dari ZIP / ZIP 照片", zipInfo ? `Menampilkan ${zipImages.length} dari ${zipInfo.imageCount} foto di ZIP.` : "Belum ada foto dari ZIP")}
+${zipInfo ? `<p class="mt-4 leading-relaxed">Menampilkan ${zipImages.length} dari ${zipInfo.imageCount} foto di ZIP. Chat-nya sudah lengkap, foto dimuat 20 pertama agar tidak berat.</p>${zipImages.length ? `<div class="mt-4 grid grid-cols-3 gap-2 sm:gap-3">${zipImages.slice(0, 20).map((img) => `<figure class="m-0 overflow-hidden rounded-lg border border-[var(--line)] bg-[var(--surface-2)]"><img src="${img.url}" alt="${esc(img.name)}" class="block aspect-square w-full object-cover" loading="lazy"><figcaption class="truncate px-2 py-1 text-[11px] text-[var(--muted)]">${esc(img.name)}</figcaption></figure>`).join("")}</div>` : `<p class="mt-4 text-[var(--muted)]">Tidak ada foto yang bisa ditampilkan dari ZIP ini, tetapi chat sudah tampil di atas.</p>`}` : `<p class="mt-4 leading-relaxed text-[var(--muted)]">Upload file .zip hasil export WhatsApp untuk melihat 20 foto pertama di sini. File hanya dibaca di browser. Pesan hanya media tanpa teks tetap disembunyikan seperti sebelumnya.</p>`}</section>`;
+}
+function update() { compute(); renderSettings(); renderSaved(); renderResults(); renderZip(); }
+
+/* ===== Events ===== */
+$("date").addEventListener("change", (e) => { date = e.target.value; if (date) notice = `Menampilkan pesan tanggal ${formatDateLong(date)}.`; update(); });
+$("tempel-chat").addEventListener("input", (e) => { pastedText = e.target.value; });
+$("btnUpload").addEventListener("click", () => $("file").click());
+$("btnPaste").addEventListener("click", () => {
+  const text = pastedText.trim();
+  if (!text) { notice = "Tempel history chat dulu di area “Tempel history chat langsung”, lalu tekan “Proses Otomatis dari Tempelan”."; return update(); }
+  const detected = detectLatestDate(text);
+  rawText = text; fileName = "Tempelan chat langsung";
+  if (detected) { date = detected; $("date").value = date; notice = `Tempelan diproses otomatis. Tanggal terbaru terdeteksi: ${formatDateLong(detected)}. Rekap langsung ditampilkan untuk tanggal tersebut.`; }
+  else notice = "Tempelan diproses, tetapi tidak ada tanggal yang terdeteksi. Pilih tanggal rekap secara manual.";
+  update();
+});
+$("btnCopy").addEventListener("click", () => copyText(buildRecapText(), "Rekap berhasil disalin. Tempel di WhatsApp atau dokumen lain."));
+$("btnSave").addEventListener("click", () => {
+  if (!messages.length || saving) return;
+  const recapText = buildRecapText();
+  saving = true; savedError = ""; update();
+  try {
+    const list = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+    list.unshift({ id: String(Date.now()) + Math.random().toString(36).slice(2, 6), created_at: new Date().toISOString(), value: { date, dateLabel: formatDateLong(date), fileName, recapText, messageCount: messages.length, driverCount: recap.status.length, problemCount: recap.problems.length } });
+    writeRecords(list); reloadRecords();
+    notice = "Rekap berhasil disimpan dan dapat dibuka lagi dari daftar rekap tersimpan.";
+  } catch (e) { savedError = e instanceof Error ? e.message : "Rekap gagal disimpan."; }
+  saving = false; update();
+});
+$("saved").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-del]"); if (!b) return;
+  try { writeRecords(JSON.parse(localStorage.getItem(LS_KEY) || "[]").filter((r) => r.id !== b.dataset.del)); reloadRecords(); notice = "Rekap tersimpan dihapus."; }
+  catch (err) { savedError = err instanceof Error ? err.message : "Rekap gagal dihapus."; }
+  update();
+});
+$("file").addEventListener("change", async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  e.target.value = "";
+  if (/\.zip$/i.test(file.name)) {
+    const sizeMb = (file.size / 1024 / 1024).toFixed(1);
+    zipLoading = true; notice = `Membaca .zip (${sizeMb} MB) — mengekstrak .txt dulu...`; savedError = ""; update();
+    try {
+      const result = await parseZip(await file.arrayBuffer());
+      clearZipImages();
+      zipUrls = result.images.map((img) => img.url);
+      zipImages = result.images;
+      zipInfo = { fileCount: result.fileCount, imageCount: result.imageCount, mediaCount: result.mediaCount, fileName: file.name };
+      rawText = result.chatText; fileName = file.name;
+      const detected = detectLatestDate(result.chatText);
+      if (detected) { date = detected; $("date").value = date; notice = `ZIP dibaca: ${result.fileCount} file di dalam ZIP, ${result.mediaCount} foto/video. Menampilkan chat + ${result.images.length} foto pertama. Chat sudah tampil. Tanggal terbaru: ${formatDateLong(detected)}.`; }
+      else notice = `ZIP dibaca: ${result.fileCount} file di dalam ZIP, ${result.mediaCount} foto/video. Menampilkan chat + ${result.images.length} foto pertama. Chat sudah tampil. Pilih tanggal rekap secara manual.`;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      savedError = `Gagal membaca ZIP: ${msg}`;
+      notice = `Gagal membaca ZIP: ${msg} Coba upload file .txt saja (export tanpa media), atau export ulang dari WhatsApp dengan Sertakan Media.`;
+    } finally { zipLoading = false; }
+    return update();
+  }
+  if (!/\.txt$/i.test(file.name)) { notice = "Pilih file berekstensi .txt atau .zip hasil export WhatsApp."; return update(); }
+  clearZipImages();
+  const reader = new FileReader();
+  reader.onload = () => {
+    const text = String(reader.result || "");
+    const detected = detectLatestDate(text);
+    rawText = text; fileName = file.name;
+    if (detected) { date = detected; $("date").value = date; notice = `File ${file.name} dibaca di browser. Tanggal terbaru terdeteksi otomatis: ${formatDateLong(detected)}. Rekap langsung ditampilkan untuk tanggal tersebut.`; }
+    else notice = date ? `File ${file.name} dibaca di browser. Hanya pesan tanggal ${formatDateLong(date)} yang ditampilkan.` : `File ${file.name} dibaca di browser. Pilih tanggal rekap untuk menampilkan pesannya.`;
+    update();
+  };
+  reader.readAsText(file);
+  update();
+});
+reloadRecords();
+update();
+</script>
+</body>
+</html>
